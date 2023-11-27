@@ -83,6 +83,94 @@
 //   var ordPaKnapp = document.getElementById("letterBoxes");
 //   ordPaKnapp.innerHTML = slumpatOrd;
 // }
+
+// // **************************************************************2
+// function valjOrd() {
+//   var ord = [
+//     "äpple",
+//     "klocka",
+//     "häftig",
+//     "vatten",
+//     "mjölk",
+//     "spelar",
+//     "guitar",
+//     "havet",
+//     "bollar",
+//     "stolar",
+//   ];
+//   var ordRandom = Math.floor(Math.random() * ord.length);
+//   return ord[ordRandom];
+// }
+
+// function fyllKnapparMedAsterisker(ord) {
+//   var inputFalt = document.querySelectorAll("#letterBoxes input");
+//   for (var i = 0; i < ord.length; i++) {
+//     inputFalt[i].setAttribute("value", "*");
+//   }
+// }
+
+// function uppdateraKnapparMedBokstav(ord, bokstav) {
+//   var inputFalt = document.querySelectorAll("#letterBoxes input");
+//   for (var i = 0; i < ord.length; i++) {
+//     if (ord[i] === bokstav) {
+//       inputFalt[i].setAttribute("value", bokstav);
+//     }
+//   }
+// }
+
+// // Listor och variabler
+// var valtOrd = [];
+// var gissadeBokstaver = [];
+// var gissningar = 6;
+
+// // Fånga upp bokstäver och kolla jämför dom mot ordet som finns sparad i gissadBokstav
+// function skickaOrd(ord) {
+//   valtOrd = ord;
+// }
+
+// // Lägg till en funktion för att uppdatera de gissade bokstäverna i gränssnittet
+// function uppdateraGissadeBokstaver() {
+//   var guessedLettersElement = document.getElementById("guessedLetters");
+//   guessedLettersElement.textContent =
+//     "Gissade bokstäver: " + gissadeBokstaver.join(", ");
+// }
+
+// // Känn efter vilka tangenter som trycks ner spara dom
+
+// document.addEventListener("keydown", function (event) {
+//   if (event.key >= 65 && event.key <= 90) {
+//     var gissadBokstav = String.fromCharCode(event.keyCode).toLowerCase();
+//     if (!gissadeBokstaver.includes(gissadBokstav)) {
+//       // Uppdaterat namn
+//       gissadeBokstaver.push(gissadBokstav);
+//       gissatPa(gissadBokstav);
+//     }
+//   }
+// });
+
+// // llllllllllllllllllllllllllllllllllllllllllllllllllllllll
+// function startaSpel() {
+//   var hamtaOrd = valjOrd();
+//   skickaOrd(hamtaOrd);
+//   fyllKnapparMedAsterisker(hamtaOrd);
+//   uppdateraGissadeBokstaver(); // Uppdatera gränssnittet med de gissade bokstäverna
+//   // Här kan du lägga till din kod för att hantera användarens gissningar.
+// }
+// document.getElementById("startGameBtn").addEventListener("click", startaSpel);
+// // *******************************************************************************************************2
+//
+//
+//
+//
+//
+//
+//
+//
+// Listor och variablar
+
+const valtOrd = [];
+
+// Slumpar ut ord från listan och länkas vidare till funktion laggInOrdSomStjarna samt pushar ordet till valtOrd.
 function valjOrd() {
   var ord = [
     "äpple",
@@ -97,61 +185,20 @@ function valjOrd() {
     "stolar",
   ];
   var ordRandom = Math.floor(Math.random() * ord.length);
-  return ord[ordRandom];
+  var slumpatOrd = ord[ordRandom];
+  valtOrd.push(slumpatOrd);
+  laggInOrdSomStjarna(slumpatOrd);
 }
-
-function fyllKnapparMedAsterisker(ord) {
-  var inputFalt = document.querySelectorAll("#letterBoxes input");
-  for (var i = 0; i < ord.length; i++) {
-    inputFalt[i].setAttribute("value", "*");
+// Tar ordet som slumpas ut från listan och lägger in det i html documentet och lägger till <3
+function laggInOrdSomStjarna(ord) {
+  var stjarna = document.querySelectorAll("#letterBoxes input");
+  for (let i = 0; i < ord.length; i++) {
+    stjarna[i].setAttribute("value", "<3");
   }
 }
-
-function uppdateraKnapparMedBokstav(ord, bokstav) {
-  var inputFalt = document.querySelectorAll("#letterBoxes input");
-  for (var i = 0; i < ord.length; i++) {
-    if (ord[i] === bokstav) {
-      inputFalt[i].setAttribute("value", bokstav);
-    }
-  }
-}
-
-// Listor och variabler
-var valtOrd = [];
-var gissadeBokstaver = [];
-var gissningar = 6;
-
-// Fånga upp bokstäver och kolla jämför dom mot ordet som finns sparad i gissadBokstav
-function skickaOrd(ord) {
-  valtOrd = ord;
-}
-
-// Lägg till en funktion för att uppdatera de gissade bokstäverna i gränssnittet
-function uppdateraGissadeBokstaver() {
-  var guessedLettersElement = document.getElementById("guessedLetters");
-  guessedLettersElement.textContent =
-    "Gissade bokstäver: " + gissadeBokstaver.join(", ");
-}
-
-// Känn efter vilka tangenter som trycks ner spara dom
-
-document.addEventListener("keydown", function (event) {
-  if (event.key >= 65 && event.key <= 90) {
-    var gissadBokstav = String.fromCharCode(event.keyCode).toLowerCase();
-    if (!gissadeBokstaver.includes(gissadBokstav)) {
-      // Uppdaterat namn
-      gissadeBokstaver.push(gissadBokstav);
-      gissatPa(gissadBokstav);
-    }
-  }
-});
-
-// llllllllllllllllllllllllllllllllllllllllllllllllllllllll
+// startar spelet ock kör igång funktionen valjOrd när spelaren trycker på starta i Html documentet
 function startaSpel() {
-  var hamtaOrd = valjOrd();
-  skickaOrd(hamtaOrd);
-  fyllKnapparMedAsterisker(hamtaOrd);
-  uppdateraGissadeBokstaver(); // Uppdatera gränssnittet med de gissade bokstäverna
-  // Här kan du lägga till din kod för att hantera användarens gissningar.
+  valjOrd();
 }
-document.getElementById("startGameBtn").addEventListener("click", startaSpel);
+
+document.querySelector("#startGameBtn").addEventListener("click", startaSpel);
