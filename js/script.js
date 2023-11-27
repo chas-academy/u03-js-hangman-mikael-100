@@ -20,42 +20,138 @@
 
 // let gissningar = 0;
 
+// Att bygga spelet Hänga Gubbe innebär att hantera olika delar av spelets logik. Här är några övergripande steg och funktioner du kan överväga att implementera:
+
+// Lista av ord:
+
+// Skapa en lista med ord som spelaren ska gissa.
+// Välja ett slumpmässigt ord:
+
+// Skriv en funktion för att välja ett slumpmässigt ord från listan.
+// Visa ordet:
+
+// Skapa en funktion för att visa det valda ordet med streck eller underscores för varje bokstav.
+// Gissning av bokstav:
+
+// Implementera en funktion som låter spelaren gissa en bokstav.
+// Hantera felaktiga gissningar:
+
+// Håll reda på felaktiga gissningar och uppdatera ett hängande gubbe-illustration beroende på antalet felaktiga gissningar.
+// Kontrollera vinst/förlust:
+
+// Utvärdera om spelaren har gissat hela ordet eller om antalet felaktiga gissningar har nått en maximal nivå.
+// Återställa spelet:
+
+// Efter varje omgång, skapa en funktion för att återställa spelet till en ny omgång.
+// När det gäller hur dessa funktioner ska kombineras, överväg att använda ett objekt för att hantera spelets nuvarande tillstånd. Till exempel:
+
 // Ordlista som slumpas
-const ordLista = [
-  "äpple",
-  "klocka",
-  "häftig",
-  "vatten",
-  "mjölk",
-  "spelar",
-  "guitar",
-  "havet",
-  "bollar",
-  "stolar",
-];
+// const ordLista = [
+//   "äpple",
+//   "klocka",
+//   "häftig",
+//   "vatten",
+//   "mjölk",
+//   "spelar",
+//   "guitar",
+//   "havet",
+//   "bollar",
+//   "stolar",
+// ];
 
-function valjerOrd(ordLista) {
-  var ord = Math.floor(Math.random() * ordLista.length);
-  return ordLista[ord];
+// function valjerOrd(ordLista) {
+//   var ord = Math.floor(Math.random() * ordLista.length);
+//   return ordLista[ord];
+// }
+
+// // Väljer det slumpade ordet
+// const slumpatOrd = valjerOrd(ordLista);
+// console.log("Slumpat ord:", slumpatOrd);
+
+// // Konverterar ordet till lowercase
+
+// if (slumpatOrd) {
+//   const ordTillLowercase = slumpatOrd.toLowerCase();
+//   // Resten av din kod som använder ordTillLowercase
+// } else {
+//   console.error("Inget ord slumpades.");
+// }
+
+// Visa ordet som * i Html dokumentet
+
+// function visaOrd() {
+//   var ordPaKnapp = document.getElementById("letterBoxes");
+//   ordPaKnapp.innerHTML = slumpatOrd;
+// }
+function valjOrd() {
+  var ord = [
+    "äpple",
+    "klocka",
+    "häftig",
+    "vatten",
+    "mjölk",
+    "spelar",
+    "guitar",
+    "havet",
+    "bollar",
+    "stolar",
+  ];
+  var ordRandom = Math.floor(Math.random() * ord.length);
+  return ord[ordRandom];
 }
 
-// Väljer det slumpade ordet
-const slumpatOrd = valjerOrd(ordLista);
-console.log("Slumpat ord:", slumpatOrd);
-
-// Konverterar ordet till lowercase
-
-if (slumpatOrd) {
-  const ordTillLowercase = slumpatOrd.toLowerCase();
-  // Resten av din kod som använder ordTillLowercase
-} else {
-  console.error("Inget ord slumpades.");
+function fyllKnapparMedAsterisker(ord) {
+  var inputFalt = document.querySelectorAll("#letterBoxes input");
+  for (var i = 0; i < ord.length; i++) {
+    inputFalt[i].setAttribute("value", "*");
+  }
 }
-// Hittar DOM-elementet "letterBoxes"
-// const letterBoxes = document.getElementById("letterBoxes");
-// Sparar gissade bokstäver
-// console.log("letterBoxes:", letterBoxes);
 
-// const gissadBokstaver = Array.from(ordTillLowercase).map(function () {
-//   return "_";
-// });
+function uppdateraKnapparMedBokstav(ord, bokstav) {
+  var inputFalt = document.querySelectorAll("#letterBoxes input");
+  for (var i = 0; i < ord.length; i++) {
+    if (ord[i] === bokstav) {
+      inputFalt[i].setAttribute("value", bokstav);
+    }
+  }
+}
+
+// Listor och variabler
+var valtOrd = [];
+var gissadeBokstaver = [];
+var gissningar = 6;
+
+// Fånga upp bokstäver och kolla jämför dom mot ordet som finns sparad i gissadBokstav
+function skickaOrd(ord) {
+  valtOrd = ord;
+}
+
+// Lägg till en funktion för att uppdatera de gissade bokstäverna i gränssnittet
+function uppdateraGissadeBokstaver() {
+  var guessedLettersElement = document.getElementById("guessedLetters");
+  guessedLettersElement.textContent =
+    "Gissade bokstäver: " + gissadeBokstaver.join(", ");
+}
+
+// Känn efter vilka tangenter som trycks ner spara dom
+
+document.addEventListener("keydown", function (event) {
+  if (event.key >= 65 && event.key <= 90) {
+    var gissadBokstav = String.fromCharCode(event.keyCode).toLowerCase();
+    if (!gissadeBokstaver.includes(gissadBokstav)) {
+      // Uppdaterat namn
+      gissadeBokstaver.push(gissadBokstav);
+      gissatPa(gissadBokstav);
+    }
+  }
+});
+
+// llllllllllllllllllllllllllllllllllllllllllllllllllllllll
+function startaSpel() {
+  var hamtaOrd = valjOrd();
+  skickaOrd(hamtaOrd);
+  fyllKnapparMedAsterisker(hamtaOrd);
+  uppdateraGissadeBokstaver(); // Uppdatera gränssnittet med de gissade bokstäverna
+  // Här kan du lägga till din kod för att hantera användarens gissningar.
+}
+document.getElementById("startGameBtn").addEventListener("click", startaSpel);
