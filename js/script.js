@@ -202,3 +202,57 @@ function startaSpel() {
 }
 
 document.querySelector("#startGameBtn").addEventListener("click", startaSpel);
+
+// Gör funktion som loggar varje tangettryck jämför och lägger den i en lista och räknar ner gissningar
+
+var gissning = 0;
+var gissadeBokstaverLista = []; // Använd rätt namn här
+
+document.addEventListener("keydown", function (tangent) {
+  const key = tangent.key.toLocaleLowerCase();
+
+  if (key >= "a" && key <= "ö" && !gissadeBokstaverLista.includes(key)) {
+    gissadeBokstaverLista.push(key); // Använd rätt namn här
+
+    const gissadeBokstaver = document.getElementById("gissade-bokstaver");
+    const laggInBokstav = document.createElement("li");
+    laggInBokstav.textContent = key;
+    gissadeBokstaver.appendChild(laggInBokstav);
+  } else {
+    alert(
+      "Du har redan gissat på bokstaven " + key + "\n se Gissade Bokstäver"
+    );
+  }
+});
+
+// Mus CLick för att logga tangenter i lista och på skärm
+
+const knappar = document.querySelectorAll("letterButtons button");
+knappar.forEach(function(knap)){
+  knap.addEventListener("click", function(){
+    const bokstav = knap.textContent;
+    musClick(bokstav);
+  })
+}
+
+function musClick(bokstav){
+  const clickBokstavLiten = bokstav.toLocaleLowerCase();
+
+  if (clickBokstavLiten >= "a" && clickBokstavLiten <= "ö" && !gissadeBokstaverLista.includes(clickBokstavLiten)){
+    gissadeBokstaverLista.push(clickBokstavLiten)
+  } else {
+    alert("Du har redan gissat på" + clickBokstavLiten + "\n Se Gissade Bokstäver!")
+  }
+
+  const gissadeBokstaver = document.getElementById("gissade-bokstaver");
+  const laggInBokstav = document.createElement("LI")
+  laggInBokstav.textContent = clickBokstavLiten;
+  gissadeBokstaver.appendChild(laggInBokstav);
+}
+
+// kunna räkna ner din antal gissningar
+
+// Kunna jämföra med ordet som slumpatsfram och lägga fram den nokstaven
+
+// Om bokstaven är fel vli av med en gissning och lägga fram en bild på gubben som skall hängas
+
