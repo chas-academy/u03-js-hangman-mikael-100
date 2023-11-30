@@ -166,6 +166,16 @@
 //
 //
 //
+//
+//
+//
+//
+//
+
+//
+//
+//
+//
 // Listor och variablar
 
 const valtOrd = [];
@@ -187,19 +197,19 @@ function valjOrd() {
     "bollar",
     "stolar",
   ];
-  const slumpatOrd = ordlista[Math.floor(Math.random() * ordlista.length)];
+  var ordRandom = Math.floor(Math.random() * ord.length);
+  var slumpatOrd = ord[ordRandom];
   valtOrd.push(slumpatOrd);
   laggInOrdSomStjarna(slumpatOrd);
 }
 
 // Tar ordet som slumpas ut från listan och lägger in det i html documentet och lägger till <3
 function laggInOrdSomStjarna(ord) {
-  const stjarnor = document.querySelectorAll("#letterBoxes input");
-
-  // Endast sätt värdet om det är en bokstav, annars behåll det nuvarande värdet
+  var stjarna = document.querySelectorAll("#letterBoxes input");
   for (let i = 0; i < ord.length; i++) {
+    // Endast sätt värdet om det är en bokstav, annars behåll det nuvarande värdet
     if (ord[i].match(/[a-ö]/i)) {
-      stjarnor[i].setAttribute("value", "<3");
+      stjarna[i].setAttribute("value", "<3");
     }
   }
 }
@@ -299,41 +309,77 @@ function musClick(bokstav) {
   gissadeBokstaver.appendChild(laggInBokstav);
 }
 
-// Kontrollera om den gissade bokstaven finns i valtOrd och visa den
-function ersattBokstav(valtOrd, gissadBokstav) {
-  const stjarnor = document.querySelectorAll("#letterBoxes input");
+// Funktion för att kontrollera och lägga till gissad bokstav
+function addGuessedLetter(letter) {
+  // Kontrollera om bokstaven redan är gissad
+  if (gissadeBokstaverLista.indexOf(letter) === -1) {
+    // Lägg till bokstaven i gissadeBokstaverLista-arrayen
+    gissadeBokstaverLista.push(letter);
 
-  for (let i = 0; i < valtOrd.length; i++) {
-    if (valtOrd[i] === gissadBokstav) {
-      stjarnor[i].value = gissadBokstav;
+    // Kontrollera om den gissade bokstaven finns i det valda ordet
+    if (valtOrd.includes(letter)) {
+      console.log("Rätt gissning!");
+    } else {
+      console.log("Fel gissning!");
     }
-  }
 
-  // Lägg till en check för att kontrollera om hela ordet är gissat
-  if (
-    valtOrd.join("") ===
-    Array.from(stjarnor)
-      .map(function (input) {
-        return input.value;
-      })
-      .join("")
-  ) {
-    alert("Grattis! Du har gissat rätt ord!");
-    // Eventuell annan logik för när hela ordet är gissat
+    // Uppdatera HTML för att visa de gissade bokstäverna
+    updateGuessedLetters();
+  } else {
+    alert("Bokstav redan gissad!");
   }
 }
+
+//
+// '*********************************************************************************
+//
+// Okej! Gör så att spelaet startar om när du trycker på start game
+//
+//FÅ till så att om rätt bokstav gissas kommer en bild up till hänga gubbe
+//
+//Kolla även på om spelet kan starta om efter du tryckt på okej när du vunnit
+//
+//
+//
+//
+// llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll
+// Funktion för att uppdatera HTML med de gissade bokstäverna
+// var gissadeBokstaverLista = [];
+
+// // Funktion för att kontrollera och lägga till gissad bokstav
+// function addGuessedLetter(letter) {
+//     // Kontrollera om bokstaven redan är gissad
+//     if (gissadeBokstaverLista.indexOf(letter) === -1) {
+//         // Lägg till bokstaven i gissadeBokstaverLista-arrayen
+//         gissadeBokstaverLista.push(letter);
+
+//         // Kontrollera om den gissade bokstaven finns i det valda ordet
+//         if (valtOrd.includes(letter)) {
+//             console.log("Rätt gissning!");
+//         } else {
+//             console.log("Fel gissning!");
+//         }
+
+//         // Uppdatera HTML för att visa de gissade bokstäverna
+//         updateGuessedLetters();
+//     } else {
+//         alert("Bokstav redan gissad!");
+//     }
+// }
+
+// Funktion för att uppdatera HTML med de gissade bokstäverna
+
 // Lägg till en check för att kontrollera om hela ordet är gissat
-//   if (
-//     valtOrdStr ===
-//     Array.from(stjarnor)
-//       .map(function (input) {
-//         return input.value;
-//       })
-//       .join("")
-//   ) {
-//     alert("Grattis! Du har gissat rätt ord!");
-//     // Eventuell annan logik för när hela ordet är gissat
-//   }
+// if (
+//   valtOrdStr ===
+//   Array.from(stjarnor)
+//     .map(function (input) {
+//       return input.value;
+//     })
+//     .join("")
+// ) {
+//   alert("Grattis! Du har gissat rätt ord!");
+//   // Eventuell annan logik för när hela ordet är gissat
 // }
 
 // Avslutar spelet om Max antal gissningar är uppnåd
