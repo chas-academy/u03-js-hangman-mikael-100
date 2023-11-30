@@ -169,10 +169,13 @@
 // Listor och variablar
 
 const valtOrd = [];
+var maxAntalGissningar = 8;
+var antalGissningar = 0;
+var gissadeBokstaverLista = [];
 
 // Slumpar ut ord från listan och länkas vidare till funktion laggInOrdSomStjarna samt pushar ordet till valtOrd.
 function valjOrd() {
-  var ord = [
+  const ord = [
     "äpple",
     "klocka",
     "häftig",
@@ -184,16 +187,20 @@ function valjOrd() {
     "bollar",
     "stolar",
   ];
-  var ordRandom = Math.floor(Math.random() * ord.length);
-  var slumpatOrd = ord[ordRandom];
+  const slumpatOrd = ordlista[Math.floor(Math.random() * ordlista.length)];
   valtOrd.push(slumpatOrd);
   laggInOrdSomStjarna(slumpatOrd);
 }
+
 // Tar ordet som slumpas ut från listan och lägger in det i html documentet och lägger till <3
 function laggInOrdSomStjarna(ord) {
-  var stjarna = document.querySelectorAll("#letterBoxes input");
+  const stjarnor = document.querySelectorAll("#letterBoxes input");
+
+  // Endast sätt värdet om det är en bokstav, annars behåll det nuvarande värdet
   for (let i = 0; i < ord.length; i++) {
-    stjarna[i].setAttribute("value", "<3");
+    if (ord[i].match(/[a-ö]/i)) {
+      stjarnor[i].setAttribute("value", "<3");
+    }
   }
 }
 // startar spelet ock kör igång funktionen valjOrd när spelaren trycker på starta i Html documentet
@@ -205,19 +212,34 @@ document.querySelector("#startGameBtn").addEventListener("click", startaSpel);
 
 // Gör funktion som loggar varje tangettryck jämför och lägger den i en lista och räknar ner gissningar
 
-var gissning = 0;
-var gissadeBokstaverLista = []; // Använd rätt namn här
-
 document.addEventListener("keydown", function (tangent) {
   const key = tangent.key.toLocaleLowerCase();
 
+  if (valtOrd.includes(key)) {
+    visaGissadBokstav(key);
+  }
+
+  if (antalGissningar >= maxAntalGissningar) {
+    speletArKlart();
+    return; // Returnera här för att undvika att utföra andra handlingar
+  }
+
   if (key >= "a" && key <= "ö" && !gissadeBokstaverLista.includes(key)) {
-    gissadeBokstaverLista.push(key); // Använd rätt namn här
+    gissadeBokstaverLista.push(key);
+    antalGissningar++; // Öka antalet gissningar här
 
     const gissadeBokstaver = document.getElementById("gissade-bokstaver");
     const laggInBokstav = document.createElement("li");
     laggInBokstav.textContent = key;
     gissadeBokstaver.appendChild(laggInBokstav);
+
+    const knappar = document.querySelectorAll("#letterButtons button");
+    for (const knapp of knappar) {
+      if (knapp.textContent.trim().toLocaleLowerCase() === key) {
+        knapp.disabled = true;
+        break;
+      }
+    }
   } else {
     alert(
       "Du har redan gissat på bokstaven " + key + "\n se Gissade Bokstäver"
@@ -227,32 +249,104 @@ document.addEventListener("keydown", function (tangent) {
 
 // Mus CLick för att logga tangenter i lista och på skärm
 
-const knappar = document.querySelectorAll("letterButtons button");
-knappar.forEach(function(knap)){
-  knap.addEventListener("click", function(){
+const knappar = document.querySelectorAll("#letterButtons button");
+knappar.forEach(function (knap) {
+  knap.addEventListener("click", function () {
     const bokstav = knap.textContent;
     musClick(bokstav);
-  })
-}
+    // Ändrar Färg på den klickade knappen
+    knap.disabled = true;
+  });
+});
 
-function musClick(bokstav){
+// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+
+function musClick(bokstav) {
   const clickBokstavLiten = bokstav.toLocaleLowerCase();
+  // Kollar om Bokstaven finns i valtOrd
+  if (valtOrd.includes(clickBokstavLiten)) {
+    ersattBokstav(valtOrd[0], clickBokstavLiten);
+  }
 
-  if (clickBokstavLiten >= "a" && clickBokstavLiten <= "ö" && !gissadeBokstaverLista.includes(clickBokstavLiten)){
-    gissadeBokstaverLista.push(clickBokstavLiten)
+  // Kollar om Bokstaven finns i valtOrd
+  if (valtOrd.includes(clickBokstavLiten)) {
+    visaGissadBokstav(clickBokstavLiten);
+  }
+  // Kontrollera om spelet redan är klart
+  if (antalGissningar >= maxAntalGissningar) {
+    speletArKlart();
+    return; // Returnera här för att undvika att utföra andra handlingar
+  }
+
+  if (
+    clickBokstavLiten >= "a" &&
+    clickBokstavLiten <= "ö" &&
+    !gissadeBokstaverLista.includes(clickBokstavLiten)
+  ) {
+    gissadeBokstaverLista.push(clickBokstavLiten);
+    antalGissningar++; // Öka antalet gissningar här
+
+    // Dina övriga logiker för att hantera en korrekt gissning
   } else {
-    alert("Du har redan gissat på" + clickBokstavLiten + "\n Se Gissade Bokstäver!")
+    alert(
+      "Du har redan gissat på " + clickBokstavLiten + "\n Se Gissade Bokstäver!"
+    );
   }
 
   const gissadeBokstaver = document.getElementById("gissade-bokstaver");
-  const laggInBokstav = document.createElement("LI")
+  const laggInBokstav = document.createElement("LI");
   laggInBokstav.textContent = clickBokstavLiten;
   gissadeBokstaver.appendChild(laggInBokstav);
 }
 
-// kunna räkna ner din antal gissningar
+// Kontrollera om den gissade bokstaven finns i valtOrd och visa den
+function ersattBokstav(valtOrd, gissadBokstav) {
+  const stjarnor = document.querySelectorAll("#letterBoxes input");
+
+  for (let i = 0; i < valtOrd.length; i++) {
+    if (valtOrd[i] === gissadBokstav) {
+      stjarnor[i].value = gissadBokstav;
+    }
+  }
+
+  // Lägg till en check för att kontrollera om hela ordet är gissat
+  if (
+    valtOrd.join("") ===
+    Array.from(stjarnor)
+      .map(function (input) {
+        return input.value;
+      })
+      .join("")
+  ) {
+    alert("Grattis! Du har gissat rätt ord!");
+    // Eventuell annan logik för när hela ordet är gissat
+  }
+}
+// Lägg till en check för att kontrollera om hela ordet är gissat
+//   if (
+//     valtOrdStr ===
+//     Array.from(stjarnor)
+//       .map(function (input) {
+//         return input.value;
+//       })
+//       .join("")
+//   ) {
+//     alert("Grattis! Du har gissat rätt ord!");
+//     // Eventuell annan logik för när hela ordet är gissat
+//   }
+// }
+
+// Avslutar spelet om Max antal gissningar är uppnåd
+function speletArKlart() {
+  // Implementera logiken för när spelet är klart
+  alert("Spelet är klart! Du har nått det maximala antalet gissningar.");
+  // ... (andra åtgärder du vill vidta när spelet är klart)
+}
 
 // Kunna jämföra med ordet som slumpatsfram och lägga fram den nokstaven
 
 // Om bokstaven är fel vli av med en gissning och lägga fram en bild på gubben som skall hängas
 
+// Visa ordet när spelaren gissar rätt ord i letter box filtrera genom gissade ord och i sånna fall visa ord
+
+//  bygg upp rutor beoende på ord
