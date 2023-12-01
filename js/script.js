@@ -178,7 +178,7 @@
 //
 // Listor och variablar
 
-const valtOrd = [];
+var valtOrd = [];
 var maxAntalGissningar = 8;
 var antalGissningar = 0;
 var gissadeBokstaverLista = [];
@@ -213,17 +213,19 @@ function laggInOrdSomStjarna(ord) {
     }
   }
 }
-// startar spelet ock kör igång funktionen valjOrd när spelaren trycker på starta i Html documentet
-function startaSpel() {
-  valjOrd();
-}
+
+// // startar spelet ock kör igång funktionen valjOrd när spelaren trycker på starta i Html documentet
+// function startaSpel() {
+//   valjOrd();
+// }
 
 document.querySelector("#startGameBtn").addEventListener("click", startaSpel);
 
 // Gör funktion som loggar varje tangettryck jämför och lägger den i en lista och räknar ner gissningar
-
+//
 document.addEventListener("keydown", function (tangent) {
-  const key = tangent.key.toLocaleLowerCase();
+  const key = tangent.key.toUpperCase();
+  kollaGissadBokstav(key);
 
   if (valtOrd.includes(key)) {
     visaGissadBokstav(key);
@@ -264,6 +266,7 @@ knappar.forEach(function (knap) {
   knap.addEventListener("click", function () {
     const bokstav = knap.textContent;
     musClick(bokstav);
+    kollaGissadBokstav(bokstav);
     // Ändrar Färg på den klickade knappen
     knap.disabled = true;
   });
@@ -297,42 +300,118 @@ function musClick(bokstav) {
     antalGissningar++; // Öka antalet gissningar här
 
     // Dina övriga logiker för att hantera en korrekt gissning
-  } else {
-    alert(
-      "Du har redan gissat på " + clickBokstavLiten + "\n Se Gissade Bokstäver!"
-    );
   }
-
   const gissadeBokstaver = document.getElementById("gissade-bokstaver");
   const laggInBokstav = document.createElement("LI");
   laggInBokstav.textContent = clickBokstavLiten;
   gissadeBokstaver.appendChild(laggInBokstav);
 }
 
-// Funktion för att kontrollera och lägga till gissad bokstav
-function addGuessedLetter(letter) {
-  // Kontrollera om bokstaven redan är gissad
-  if (gissadeBokstaverLista.indexOf(letter) === -1) {
-    // Lägg till bokstaven i gissadeBokstaverLista-arrayen
-    gissadeBokstaverLista.push(letter);
+// // Funktion för att kontrollera och lägga till gissad bokstav
+// function addGuessedLetter(letter) {
+//   // Kontrollera om bokstaven redan är gissad
+//   if (gissadeBokstaverLista.indexOf(letter) === -1) {
+//     // Lägg till bokstaven i gissadeBokstaverLista-arrayen
+//     gissadeBokstaverLista.push(letter);
 
-    // Kontrollera om den gissade bokstaven finns i det valda ordet
-    if (valtOrd.includes(letter)) {
-      console.log("Rätt gissning!");
-    } else {
-      console.log("Fel gissning!");
+//     // Kontrollera om den gissade bokstaven finns i det valda ordet
+//     if (valtOrd.includes(letter)) {
+//       console.log("Rätt gissning!");
+//     } else {
+//       console.log("Fel gissning!");
+//     }
+
+//     // Uppdatera HTML för att visa de gissade bokstäverna
+//     updateGuessedLetters();
+//   } else {
+//     alert("Bokstav redan gissad!");
+//   }
+// }
+// ***********************************************************************************
+//
+// ****************************************
+// var hangmanImages = [
+//   "h0.png",
+//   "h1.png",
+//   "h2.png",
+//   "h3.png",
+//   "h4.png",
+//   // ... Lägg till fler bilder för andra steg
+// ];
+
+// var currentHangmanStep = 0;
+
+// Känner av peydown och startar kollaGissadBokstav
+// document.addEventListener("keydown", function (tangent) {
+//   const key = tangent.key.toLocaleLowerCase();
+
+//   kollaGissadBokstav(key);
+// });
+
+// // Känner av mouseClick och startar kolladBokstav
+// document.addEventListener("musClick", function (tangent) {
+//   const key = tangent.key.toLocaleLowerCase();
+
+//   kollaGissadBokstav(key);
+// });
+// Funktion för att kontrollera om gissningen är korrekt
+
+// NU är klick och mus kopplade till kollaGissadBokstav
+// gör nu så att den kan appenda bild i html och ta fram rätt gissadbokstav kanske med en
+// LOOOOOOOOOOOOOOOOOP
+//
+//
+//
+// Kolla gissadbokstav och lägg in rätt gissad bokstav i html
+function kollaGissadBokstav(key) {
+  var stjarna = document.querySelectorAll("#letterBoxes input");
+  var bokstavHittad = false;
+
+  for (let i = 0; i < valtOrd[0].length; i++) {
+    if (valtOrd[0][i].toLowerCase() === key.toLowerCase()) {
+      // Endast ersätt om bokstaven matchar den gissade bokstaven (stor- eller småbokstav)
+      stjarna[i].setAttribute("value", key);
+      bokstavHittad = true;
     }
-
-    // Uppdatera HTML för att visa de gissade bokstäverna
-    updateGuessedLetters();
-  } else {
-    alert("Bokstav redan gissad!");
   }
 }
+
+// Funktion för att ta bort inmatade bokstäver
+function removeEnteredLetters() {
+  var gissadeBokstaverContainer = document.getElementById("gissade-bokstaver");
+
+  // Ta bort alla listelement från container
+  while (gissadeBokstaverContainer.firstChild) {
+    gissadeBokstaverContainer.removeChild(gissadeBokstaverContainer.firstChild);
+  }
+}
+
+// Funktion för att återställa spelet till det ursprungliga tillståndet
+function resetGame() {
+  removeEnteredLetters();
+  valtOrd.length = 0;
+  antalGissningar = 0;
+  gissadeBokstaverLista.length = 0;
+  // UnDisablarKnappar
+  var knappar = document.querySelectorAll("#letterButtons button");
+  knappar.forEach(function (knapp) {
+    knapp.disabled = false;
+  });
+}
+
+// Funktion för att starta spelet
+function startaSpel() {
+  resetGame();
+  valjOrd();
+}
+
+document.querySelector("#startGameBtn").addEventListener("click", startaSpel);
 
 //
 // '*********************************************************************************
 //
+// Funktion för att jämföra och ersätta tecken
+
 // Okej! Gör så att spelaet startar om när du trycker på start game
 //
 //FÅ till så att om rätt bokstav gissas kommer en bild up till hänga gubbe
@@ -387,6 +466,7 @@ function speletArKlart() {
   // Implementera logiken för när spelet är klart
   alert("Spelet är klart! Du har nått det maximala antalet gissningar.");
   // ... (andra åtgärder du vill vidta när spelet är klart)
+  startaSpel();
 }
 
 // Kunna jämföra med ordet som slumpatsfram och lägga fram den nokstaven
