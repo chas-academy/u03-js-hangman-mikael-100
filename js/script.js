@@ -29,16 +29,16 @@ var rattGissadBokstav = 0;
 // Slumpar ut ord från listan och länkas vidare till funktion laggInOrdSomStjarna samt pushar ordet till valtOrd.
 function valjOrd() {
   const ord = [
-    "äpple",
-    "klocka",
-    "häftig",
-    "vatten",
-    "mjölk",
-    "spelar",
-    "guitar",
-    "havet",
-    "bollar",
-    "stolar",
+    "ÄPPLET",
+    "BOLLEN",
+    "SKOGEN",
+    "STOLEN",
+    "GURKAN",
+    "BLOMMA",
+    "HAVET",
+    "MÖSSAN",
+    "TÅRTAN",
+    "FÅGELN",
   ];
   var ordRandom = Math.floor(Math.random() * ord.length);
   var slumpatOrd = ord[ordRandom];
@@ -61,59 +61,88 @@ function laggInOrdSomStjarna(ord) {
 
 document.querySelector("#startGameBtn").addEventListener("click", startaSpel);
 
-// funktion som loggar varje tangettryck jämför och lägger den i en lista och räknar ner gissningar
+// funktion som loggar varje tangettryck jämför och lägger den i en lista och räknar upp gissningar
 //
-document.addEventListener("keydown", function (tangent) {
-  const key = tangent.key.toUpperCase();
+
+// ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// document.addEventListener("keydown", function (tangent) {
+//   const key = tangent.key.toUpperCase();
+//   const keyLowerCase = key.toLocaleLowerCase();
+//   kollaGissadBokstav(key);
+
+//   if (duVann(key)) {
+//     return; // Om Ordet är rätt gissat avbryts spelet.
+//   }
+//   if (gissadeBokstaverLista.includes(key)) {
+//     alert("NOOOOOO");
+//   }
+
+//   if (valtOrd.includes(key)) {
+//     visaGissadBokstav(key);
+//   }
+
+//   if (antalGissningar >= maxAntalGissningar) {
+//     speletArKlart();
+//     return; // Returnera här för att undvika att utföra andra handlingar
+//   }
+//   //
+
+//   if (
+//     key >= "A" &&
+//     key <= "Ö" &&
+//     !gissadeBokstaverLista.includes(keyLowerCase)
+//   ) {
+//     gissadeBokstaverLista.push(keyLowerCase);
+//     antalGissningar++;
+//     rattGissadBokstav++;
+
+//     const gissadeBokstaver = document.getElementById("gissade-bokstaver");
+//     const laggInBokstav = document.createElement("li");
+//     laggInBokstav.textContent = keyLowerCase.toUpperCase();
+//     gissadeBokstaver.appendChild(laggInBokstav);
+//     duVann();
+
+//     const knappar = document.querySelectorAll("#letterButtons button");
+//     for (const knapp of knappar) {
+//       if (knapp.textContent.trim().toLocaleLowerCase() === keyLowerCase) {
+//         knapp.disabled = true;
+//         break;
+//       }
+//     }
+//   }
+//   if (gissadeBokstaverLista.includes(tangent)) {
+//     alert(
+//       "Du har redan gissat på bokstaven " +
+//         keyLowerCase +
+//         "\n se Gissade Bokstäver"
+//     );
+//   }
+// });
+// ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄä
+// Tanggent
+
+document.addEventListener("keydown", function (event) {
+  const key = event.key.toUpperCase();
+
+  // Kolla om bokstaven redan är gissad
+  if (gissadeBokstaverLista.includes(key)) {
+    alert("Du har redan gissat på " + key);
+    return; // Avbryt funktionen om bokstaven redan är gissad
+  }
+
+  // Lägg till bokstaven i listan och kolla om den finns i det valda ordet
+  gissadeBokstaverLista.push(key);
   kollaGissadBokstav(key);
 
-  if (duVann(key)) {
-    return; // Om spelet är vunnet, undvik att utföra andra handlingar
-  }
+  // Lägg in bokstaven i html
+  const bokstavContainer = document.getElementById("gissade-bokstaver");
+  const li = document.createElement("li");
+  li.textContent = key;
+  bokstavContainer.appendChild(li);
 
-  if (valtOrd.includes(key)) {
-    visaGissadBokstav(key);
-  }
-
-  if (antalGissningar >= maxAntalGissningar) {
-    speletArKlart();
-    return; // Returnera här för att undvika att utföra andra handlingar
-  }
-
-  const keyLowerCase = key.toLowerCase(); // Konvertera till små bokstäver
-
-  if (
-    key >= "A" &&
-    key <= "Ö" &&
-    !gissadeBokstaverLista.includes(keyLowerCase)
-  ) {
-    gissadeBokstaverLista.push(keyLowerCase);
-    antalGissningar++;
-    rattGissadBokstav++;
-
-    const gissadeBokstaver = document.getElementById("gissade-bokstaver");
-    const laggInBokstav = document.createElement("li");
-    laggInBokstav.textContent = keyLowerCase.toUpperCase();
-    gissadeBokstaver.appendChild(laggInBokstav);
-    duVann();
-
-    const knappar = document.querySelectorAll("#letterButtons button");
-    for (const knapp of knappar) {
-      if (knapp.textContent.trim().toLocaleLowerCase() === keyLowerCase) {
-        knapp.disabled = true;
-        break;
-      }
-    }
-  }
-  if (gissadeBokstaverLista.includes(tangent)) {
-    alert(
-      "Du har redan gissat på bokstaven " +
-        keyLowerCase +
-        "\n se Gissade Bokstäver"
-    );
-  }
+  // Här kan du fortsätta med övriga delar av din kod
 });
-
+// äÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 // Mus CLick för att logga tangenter i lista och på skärm
 
 const knappar = document.querySelectorAll("#letterButtons button");
@@ -132,7 +161,7 @@ knappar.forEach(function (knap) {
 // Kontrollerar och spelet är klart
 
 function musClick(bokstav) {
-  const clickBokstavLiten = bokstav.toLocaleLowerCase();
+  const clickBokstavLiten = bokstav.toUpperCase();
 
   // Kontrollera om bokstaven redan är gissad
   if (gissadeBokstaverLista.includes(clickBokstavLiten)) {
@@ -153,7 +182,7 @@ function musClick(bokstav) {
   }
 
   if (clickBokstavLiten >= "a" && clickBokstavLiten <= "ö") {
-    gissadeBokstaverLista.push(clickBokstavLiten);
+    gissadeBokstaverLista.push(clickBokstavLiten.toUpperCase());
     antalGissningar++;
     rattGissadBokstav++;
   }
