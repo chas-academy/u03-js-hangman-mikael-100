@@ -120,27 +120,34 @@ document.querySelector("#startGameBtn").addEventListener("click", startaSpel);
 // });
 // ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄä
 // Tanggent
+// KKontrollar tangent tryck
 
 document.addEventListener("keydown", function (event) {
   const key = event.key.toUpperCase();
+  if (/^[A-Ö]$/.test(key)) {
+    knappar.forEach((knapp) => {
+      if (knapp.value === key) {
+        knapp.disabled = true;
+      }
+    });
+    // Kolla om bokstaven redan är gissad
+    if (gissadeBokstaverLista.includes(key)) {
+      alert("Du har redan gissat på " + key);
+      return; // Avbryt funktionen om bokstaven redan är gissad
+    }
 
-  // Kolla om bokstaven redan är gissad
-  if (gissadeBokstaverLista.includes(key)) {
-    alert("Du har redan gissat på " + key);
-    return; // Avbryt funktionen om bokstaven redan är gissad
+    // Lägg till bokstaven i listan och kolla om den finns i det valda ordet
+    gissadeBokstaverLista.push(key);
+    kollaGissadBokstav(key);
+
+    // Lägg in bokstaven i html
+    const bokstavContainer = document.getElementById("gissade-bokstaver");
+    const li = document.createElement("li");
+    li.textContent = key;
+    bokstavContainer.appendChild(li);
+
+    // Här kan du fortsätta med övriga delar av din kod
   }
-
-  // Lägg till bokstaven i listan och kolla om den finns i det valda ordet
-  gissadeBokstaverLista.push(key);
-  kollaGissadBokstav(key);
-
-  // Lägg in bokstaven i html
-  const bokstavContainer = document.getElementById("gissade-bokstaver");
-  const li = document.createElement("li");
-  li.textContent = key;
-  bokstavContainer.appendChild(li);
-
-  // Här kan du fortsätta med övriga delar av din kod
 });
 // äÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 // Mus CLick för att logga tangenter i lista och på skärm
@@ -167,6 +174,8 @@ function musClick(bokstav) {
   if (gissadeBokstaverLista.includes(clickBokstavLiten)) {
     alert("Du har redan gissat på bokstaven " + clickBokstavLiten);
     return; // Avbryt funktionen om bokstaven redan är gissad
+  } else {
+    gissadeBokstaverLista.push(clickBokstavLiten);
   }
 
   // Kollar om Bokstaven finns i valtOrd
