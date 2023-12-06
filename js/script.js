@@ -241,6 +241,7 @@ function resetGame() {
   aktuellBild = 0;
   rattGissadBokstav = 0;
   uppdateraBild();
+  valjOrd();
   // UnDisablarKnappar
   var knappar = document.querySelectorAll("#letterButtons button");
   knappar.forEach(function (knapp) {
@@ -285,7 +286,6 @@ function duVann(bokstav) {
 // Funktion för att starta spelet
 function startaSpel() {
   resetGame();
-  valjOrd();
 }
 
 document.querySelector("#startGameBtn").addEventListener("click", startaSpel);
