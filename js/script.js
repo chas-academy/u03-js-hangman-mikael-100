@@ -3,6 +3,8 @@
 var valtOrd = [];
 var maxAntalGissningar = 12;
 var gissadeBokstaverLista = [];
+var knappTryckningTillåten = 0;
+var duVannJU = 0;
 
 // Slumpar ut ord från listan och länkas vidare till funktion laggInOrdSomStjarna samt pushar ordet till valtOrd.
 function valjOrd() {
@@ -51,6 +53,15 @@ document.addEventListener("keydown", function (event) {
       alert("Du har redan gissat på " + key);
       return;
     }
+    // Jag var tvungen att lägga in restart på dessa två IF:S för att även om jag disablade knapparna
+    // Efter att spelaren för söker tvinga sig fram efter vinst eller förlust så kunde Keydowns forfarande loggas
+    // Så jag var tvungen att lägga in dessa för att resetta allt om spelare trillskas med att försöka spela vidare på keydown efter vinst eller förlust.
+    if (duVannJU === 3) {
+      resetGame();
+    }
+    if (knappTryckningTillåten === 3) {
+      resetGame();
+    }
 
     gissadeBokstaverLista.push(key);
     kollaGissadBokstav(key);
@@ -79,7 +90,7 @@ knappar.forEach(function (knap) {
     knap.disabled = true;
   });
 });
-
+// ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 // MusClick tar emot bokstav som skickas från addventlisternern åvan, byter sedan namn på bokstav till musTangent.
 
 // Kollar om bokstaven finns i gissadebokstaverLista, om den inte gör det skickas den till gissadebokstaverLista.
@@ -157,18 +168,34 @@ function uppdateraBild() {
     aktuellBild++;
   }
   // ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  //  GÖr om denna och lägg text att man förklorat och gör att man inte kan göra något mer än resetta.
-  // Gör en async funktion för att kunna logga bild
-  // Skicka in texten i html istället att spelaren har vunnit
-  // Denn funktion avgör när spelet är slut och att den som gissar har lika många gissningar som antalet bilder som finns.
+
+  // Denna funktion kollar när billden är lika med 7 när den är det så lägger den in texten "Du har förlorat! Tryck på STARTA SPELET/RESET För att börja om"
+  // Funktionen knappTryckningKlart startas nu varjegång för att se om dess if kondition är uppfyllt.
   if (aktuellBild === 7) {
-    setTimeout(function () {
-      alert("Spelet är Slut");
-      resetGame();
-    }, 10);
+    let forlust = document.getElementById("message");
+    forlust.textContent =
+      "Du har förlorat! Tryck på STARTA SPELET/RESET För att börja om";
+    knappTryckningTillåten++;
+    knappTryckKlart();
+  }
+}
+// När aktuellbild är ökar knappTryckningTillåten med 1 och när den är lika med 2 Skickas en Alert till spelaren att spelet är förlorat.
+// den lägger även till plus 1 till knappTryckningTillåten som triggar nästa if som gör att knapparna blir disablade och spelaren kan endast starta om.
+
+function knappTryckKlart() {
+  if (knappTryckningTillåten === 2) {
+    alert("Du har förlorat! Tryck på STARTA SPELET/RESET För att börja om");
+    knappTryckningTillåten++;
+  }
+  if (knappTryckningTillåten === 3) {
+    var knapparRemove = document.querySelectorAll("#letterButtons button");
+    knapparRemove.forEach(function (knapp) {
+      knapp.disabled = true;
+    });
   }
 }
 
+// äÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 // Funktion för att ta bort inmatade bokstäver
 function removeEnteredLetters() {
   var gissadeBokstaverContainer = document.getElementById("gissade-bokstaver");
@@ -181,16 +208,19 @@ function removeEnteredLetters() {
 
 // Funktion för att återställa spelet till det ursprungliga tillståndet
 function resetGame() {
-  removeEnteredLetters();
-  valtOrd.length = 0;
-  gissadeBokstaverLista.length = 0;
   aktuellBild = 0;
+  removeEnteredLetters();
   clearMessage();
   uppdateraBild();
+  valtOrd.length = 0;
+  gissadeBokstaverLista.length = 0;
+  knappTryckningTillåten = 0;
+  duVannJU = 0;
   valjOrd();
   // UnDisablarKnappar
   var knappar = document.querySelectorAll("#letterButtons button");
   knappar.forEach(function (knapp) {
+    knapp.style.display = "block";
     knapp.disabled = false;
   });
 }
@@ -208,12 +238,28 @@ function duVann() {
     });
 
     // Uppdatering: Använd bokstav eller key i alert-meddelandet
+    //  Om alla bokstaver är gissat så läggs "Grattis Du Vann" in på html sidan
+    // När alla bokstaver är rättgissade skickas även plus 1 till duVannJu som uppdateras
+    // När duVannJu är lika med 2 loggas en Alert som hänvisar spelaren att starta om.
     if (allaGissade) {
       let vinst = document.getElementById("message");
       vinst.textContent = "GRattis Du Vann";
+      duVannJU++;
 
-      // alert("Grattis, du har vunnit! Ordet var: " + valtOrd[0].toUpperCase());
-      // resetGame();
+      // När duVannJU är större eller lika med 2 så triggas denna Alert som hänvisar spelaren att starta om och plussar sedan på
+      // 1 på duVannJU som triggar nästa if som disablar knappar så spelaren endast kan trycka på starta om knappen.
+    }
+    if (duVannJU === 2) {
+      alert("Du har ju Vunnit! Tryck på STARTA SPELET/RESET för att börja om");
+      duVannJU++;
+    }
+    //
+    if (duVannJU === 3) {
+      var knappar = document.querySelectorAll("#letterButtons button");
+      knappar.forEach(function (knapp) {
+        // knapp.style.display = "none";
+        knapp.disabled = true;
+      });
     }
   }
 }
