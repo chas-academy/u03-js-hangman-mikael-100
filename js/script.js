@@ -59,7 +59,7 @@ document.addEventListener("keydown", function (event) {
     if (duVannJU === 3) {
       resetGame();
     }
-    if (knappTryckningTillåten === 3) {
+    if (knappTryckningTillåten >= 3) {
       resetGame();
     }
 
@@ -90,33 +90,29 @@ knappar.forEach(function (knap) {
     knap.disabled = true;
   });
 });
-// ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 // MusClick tar emot bokstav som skickas från addventlisternern åvan, byter sedan namn på bokstav till musTangent.
 
 // Kollar om bokstaven finns i gissadebokstaverLista, om den inte gör det skickas den till gissadebokstaverLista.
 
 function musClick(musTangent) {
-  // Kontrollera om bokstaven redan är gissad
+  // Kontrollera om bokstaven redan är gissad och finns i gissadeBokstaverLista om den gör de avbryts funktionen med return
+  // Om den inte redan finns där skickas den till den listan
   if (gissadeBokstaverLista.includes(musTangent)) {
     return;
   } else {
     gissadeBokstaverLista.push(musTangent.toUpperCase());
   }
 
-  // Kollar om Bokstaven finns i valtOrd
-  if (valtOrd.includes(musTangent)) {
-    ersattBokstav(valtOrd[0], musTangent);
-    visaGissadBokstav(musTangent);
-  }
-
   // Kollar så att musTangent är en bokstav från A-Ö
+  // Skickar bokstaven till GissadeBokstaverLista och gör den till UpperCase
+  // Gör sedan visare till sista IFen som sätter igång funktionen duVann för att kontrollera om spelet är klart.
   if (musTangent >= "a" && musTangent <= "ö") {
     gissadeBokstaverLista.push(musTangent.toUpperCase());
   }
   if (duVann()) {
     return;
   }
-
+  //  Denna Kod skapar en LI i gissade-bokstaver och lägger in den gissade bokstaven i Html:en med stor bokstav.
   const gissadeBokstaver = document.getElementById("gissade-bokstaver");
   const laggInBokstav = document.createElement("LI");
   laggInBokstav.textContent = musTangent.toUpperCase();
@@ -124,29 +120,32 @@ function musClick(musTangent) {
 }
 
 // Kolla gissadbokstav och lägg in rätt gissad bokstav i html
+// Bokstav hittad variabel är satt till false.
+
 function kollaGissadBokstav(key) {
   var stjarna = document.querySelectorAll("#letterBoxes input");
   var bokstavHittad = false;
 
-  if (valtOrd && valtOrd[0]) {
-    // Kontrollera om valtOrd och valtOrd[0] är satta
+  // Om valtOrd är satt kommer denna kod att köras
+  if (valtOrd) {
+    // Kontrollera bokstaven finns med i valtOrd
     for (let i = 0; i < valtOrd[0].length; i++) {
-      if (valtOrd[0][i].toLowerCase() === key.toLowerCase()) {
-        // Endast ersätt om bokstaven matchar den gissade bokstaven (stor- eller småbokstav)
+      // Om bokstaven finns med i valt ord körs koden nedan
+      if (valtOrd[0][i] === key) {
+        // Ersätter stjärna med bokstaven och bokstavHittad blir true då uppdateras Ej bilden
         stjarna[i].setAttribute("value", key);
         bokstavHittad = true;
       }
     }
   }
-
-  // Uppdaterar bild endast om man gissar fel
+  // Uppdaterar bild om bokstaven inte finns med i ordet
   if (!bokstavHittad) {
     uppdateraBild();
   }
 }
 // Uppdaterarbild funnktion
 //
-// Här sätts en variabel för vilekn bild som visas och för att man ska kunna Nollställa den vid reset.
+// Här sätts en variabel för vilken bild som visas och för att man ska kunna Nollställa den vid reset.
 var aktuellBild = 0;
 // Här har jag skapat sökvägen till varjebild och lagt dom i en lista
 var bilder = [
@@ -167,7 +166,6 @@ function uppdateraBild() {
     bild.src = bilder[aktuellBild];
     aktuellBild++;
   }
-  // ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
   // Denna funktion kollar när billden är lika med 7 när den är det så lägger den in texten "Du har förlorat! Tryck på STARTA SPELET/RESET För att börja om"
   // Funktionen knappTryckningKlart startas nu varjegång för att se om dess if kondition är uppfyllt.
@@ -179,7 +177,7 @@ function uppdateraBild() {
     knappTryckKlart();
   }
 }
-// När aktuellbild är ökar knappTryckningTillåten med 1 och när den är lika med 2 Skickas en Alert till spelaren att spelet är förlorat.
+// När aktuellbild är lika med 7 ökar knappTryckningTillåten med 1 och när den är lika med 2 Skickas en Alert till spelaren att spelet är förlorat.
 // den lägger även till plus 1 till knappTryckningTillåten som triggar nästa if som gör att knapparna blir disablade och spelaren kan endast starta om.
 
 function knappTryckKlart() {
@@ -195,18 +193,17 @@ function knappTryckKlart() {
   }
 }
 
-// äÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// Funktion för att ta bort inmatade bokstäver
+// Funktion för att ta bort inmatade bokstäver i ID gissade-bokstaver i html.
 function removeEnteredLetters() {
   var gissadeBokstaverContainer = document.getElementById("gissade-bokstaver");
 
-  // Ta bort alla li från ID gissade bokstäver
   while (gissadeBokstaverContainer.firstChild) {
     gissadeBokstaverContainer.removeChild(gissadeBokstaverContainer.firstChild);
   }
 }
 
 // Funktion för att återställa spelet till det ursprungliga tillståndet
+// Det var lite svårt att lista ut hur alla skulle ligga. Men så som dom är radade nu kanske inte är det mest estetiska men det fungerar :)
 function resetGame() {
   aktuellBild = 0;
   removeEnteredLetters();
@@ -217,18 +214,14 @@ function resetGame() {
   knappTryckningTillåten = 0;
   duVannJU = 0;
   valjOrd();
-  // UnDisablarKnappar
+  // UnDisablarKnappar vid Restart
   var knappar = document.querySelectorAll("#letterButtons button");
   knappar.forEach(function (knapp) {
     knapp.style.display = "block";
     knapp.disabled = false;
   });
 }
-// äääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääää
 
-//
-//
-//
 // Funktionen kollar om alla boksäver i valtOrd har gissats
 function duVann() {
   if (valtOrd && valtOrd[0]) {
@@ -237,7 +230,6 @@ function duVann() {
       return gissadeBokstaverLista.includes(bokstavIordet);
     });
 
-    // Uppdatering: Använd bokstav eller key i alert-meddelandet
     //  Om alla bokstaver är gissat så läggs "Grattis Du Vann" in på html sidan
     // När alla bokstaver är rättgissade skickas även plus 1 till duVannJu som uppdateras
     // När duVannJu är lika med 2 loggas en Alert som hänvisar spelaren att starta om.
@@ -248,22 +240,23 @@ function duVann() {
 
       // När duVannJU är större eller lika med 2 så triggas denna Alert som hänvisar spelaren att starta om och plussar sedan på
       // 1 på duVannJU som triggar nästa if som disablar knappar så spelaren endast kan trycka på starta om knappen.
+      // Det går inte att trycka med musen på dom disablade knapparna men det går att göra keydown därför gjorde jag så att om
+      // spelaren trillskad och skall trycka på keydown när knapparna är disablade så startas spelet om när knappTryckningTillaten är lika eller större än 3.
     }
     if (duVannJU === 2) {
       alert("Du har ju Vunnit! Tryck på STARTA SPELET/RESET för att börja om");
       duVannJU++;
     }
-    //
+
     if (duVannJU === 3) {
       var knappar = document.querySelectorAll("#letterButtons button");
       knappar.forEach(function (knapp) {
-        // knapp.style.display = "none";
         knapp.disabled = true;
       });
     }
   }
 }
-
+// Denna funktion nollställer medelandet i message
 function clearMessage() {
   let vinst = document.getElementById("message");
   vinst.textContent = " ";
@@ -271,38 +264,6 @@ function clearMessage() {
 // Funktion för att starta spelet
 document.querySelector("#startGameBtn").addEventListener("click", resetGame);
 
-// Avslutar spelet om Max antal gissningar är uppnåd
-function speletArKlart() {
-  // Implementera logiken för när spelet är klart
-  alert("Spelet är klart! Du har nått det maximala antalet gissningar.");
-  // ... (andra åtgärder du vill vidta när spelet är klart)
-  resetGame();
-}
-
-// Kunna jämföra med ordet som slumpatsfram och lägga fram den nokstaven
-
-// Om bokstaven är fel vli av med en gissning och lägga fram en bild på gubben som skall hängas
-
-// Visa ordet när spelaren gissar rätt ord i letter box filtrera genom gissade ord och i sånna fall visa ord
-
-//  bygg upp rutor beoende på ord
-
-// Måste jag ha meddelade i elemtet i HTML???? funkar det med mina alerts??
-
-// När spelet börjar om så har jag gjort att när man trycker okej på alertknappen så startar allt om.
-
-// vad är fel på min alert på musClick?
-//
-//
-//
-//
-//
-//
-// Kolla så spelet fungerar på firefox
+//// Kolla så spelet fungerar på firefox
 // Gör så att meddelande kommer upp inne i html
-//
-//
-//
-//
-//
 // I duVann fixa så arr det logga ut på datorn i Html

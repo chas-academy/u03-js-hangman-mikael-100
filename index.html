@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hangman</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
@@ -56,7 +57,7 @@
             </ul>
             <section id="letterBoxes">
                 <!-- This is where the matched letters should appear, these should match the number of letters in the selected word -->
-                <ul>
+                <ul class="ordBox">
                     <li><input type="text" disabled value="" /></li>
                     <li><input type="text" disabled value="" /></li>
                     <li><input type="text" disabled value="" /></li>
@@ -65,11 +66,13 @@
                     <li><input type="text" disabled value="" /></li>
                 </ul>
             </section>
-            <section>
+            <section class="gissa">
                 <h2>Gissade Bokstäver</h2>
                 <ul id="gissade-bokstaver"></ul>
             </section>
-            <img id="hangman" src="images/h0.png" alt="hangman">
+            <div class="hang">
+                <img id="hangman" src="images/h0.png" alt="hangman">
+            </div>
         </section>
         <section id="message">
             <!-- This is where messages should appear -->

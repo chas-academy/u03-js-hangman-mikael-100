@@ -220,3 +220,37 @@ footer {
   );
   border-top: 1px solid #000;
 }
+
+#gissade-bokstaver {
+  display: flex;
+  flex-direction: row;
+  font-size: 2rem;
+  color: #000;
+}
+
+#message {
+  font-size: 2rem;
+  color: #cd0505;
+  text-align: center;
+}
+.hang {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30vh; /* Justera höjden efter ditt behov */
+  margin-top: 10%;
+}
+
+.ordBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+}
+.gissa {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 10px;
+}
