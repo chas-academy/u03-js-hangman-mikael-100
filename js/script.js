@@ -171,8 +171,7 @@ function uppdateraBild() {
   // Funktionen knappTryckningKlart startas nu varjegång för att se om dess if kondition är uppfyllt.
   if (aktuellBild === 7) {
     let forlust = document.getElementById("message");
-    forlust.textContent =
-      "Du har förlorat! Tryck på STARTA SPELET/RESET För att börja om";
+    forlust.textContent = "Du har förlorat!";
     knappTryckningTillåten++;
     knappTryckKlart();
   }
@@ -182,7 +181,7 @@ function uppdateraBild() {
 
 function knappTryckKlart() {
   if (knappTryckningTillåten === 2) {
-    alert("Du har förlorat! Tryck på STARTA SPELET/RESET För att börja om");
+    alert("Du har förlorat! Tryck på STARTA SPELET/RESET");
     knappTryckningTillåten++;
   }
   if (knappTryckningTillåten === 3) {
@@ -235,7 +234,7 @@ function duVann() {
     // När duVannJu är lika med 2 loggas en Alert som hänvisar spelaren att starta om.
     if (allaGissade) {
       let vinst = document.getElementById("message");
-      vinst.textContent = "GRattis Du Vann";
+      vinst.textContent = "Grattis Du Vann";
       duVannJU++;
 
       // När duVannJU är större eller lika med 2 så triggas denna Alert som hänvisar spelaren att starta om och plussar sedan på
@@ -244,7 +243,7 @@ function duVann() {
       // spelaren trillskad och skall trycka på keydown när knapparna är disablade så startas spelet om när knappTryckningTillaten är lika eller större än 3.
     }
     if (duVannJU === 2) {
-      alert("Du har ju Vunnit! Tryck på STARTA SPELET/RESET för att börja om");
+      alert("Tryck på STARTA SPELET/RESET");
       duVannJU++;
     }
 
@@ -264,6 +263,22 @@ function clearMessage() {
 // Funktion för att starta spelet
 document.querySelector("#startGameBtn").addEventListener("click", resetGame);
 
-//// Kolla så spelet fungerar på firefox
-// Gör så att meddelande kommer upp inne i html
-// I duVann fixa så arr det logga ut på datorn i Html
+// Funktion för att spela ljud
+// Knapp finns högst upp till vänster som låter spelaren starta igång musik. Jag hade den på
+// Auto start först med blev galen så spelaren själv får välja
+// Jag lade in funktionen i oneclick i html dokumentet på knappen detta gör att funktionen startar när man trycker i htmlet
+// de första if kollar om låten är pausad då sätter den igång låten och lägger fram "STOPPA MUSIK"
+// om den är igång pausas musiken och "STARTA MUSIK" loggas
+
+function lat() {
+  var lat = document.getElementById("lat");
+  var knapp = document.querySelector("button");
+
+  if (lat.paused) {
+    lat.play();
+    knapp.textContent = "STOPA MUSIK";
+  } else {
+    lat.pause();
+    knapp.textContent = "STARTA MUSIK"; // Flyttade hit för att ändra texten när låten är pausad
+  }
+}

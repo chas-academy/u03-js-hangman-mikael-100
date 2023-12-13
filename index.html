@@ -6,22 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hangman</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="icon" href="../favicon.png" type="image/x-icon">
+
 </head>
 
 <body>
     <header>
-        <h1>Uppgift 03 - Hangman</h1>
+        <div class="latKnap">
+            <audio id="lat" src="../Spok.mp3"></audio>
+            <button class="knappLat" onclick="lat()">STARTA MUSIK</button>
+        </div>
+
+        <div class="h1">
+            <h1>Hangman</h1>
+        </div>
     </header>
     <main>
-        <article>
-            <h2>Välkommen till spelet Hänga gubbe.</h2>
-            <p>När du trycker på starta spelet, kommer datorn att välja ett ord slumpmässigt. <br />
-                Det kommer då dyka upp ett visst antal fält som motsvarar antalet bokstäver i ordet. <br />
-                Ditt mål är att gissa ordet genom att trycka på bokstavsknapparna.<br />
-                För varje bokstav du gissar rätt, så fylls dyker det upp en bokstav i på den plats som bokstaven du
-                gissade på motsvarar i ordet.
-            </p>
-        </article>
+
         <button class="btn btn--stripe" type="button" id="startGameBtn">Starta spelet/Reset</button>
         <section id="gameBoard">
             <ul id="letterButtons">
@@ -55,6 +56,9 @@
                 <li><button class="btn btn--stripe" type="button" value="Ä">Ä</button></li>
                 <li><button class="btn btn--stripe" type="button" value="Ö">Ö</button></li>
             </ul>
+            <section id="message">
+                <!-- This is where messages should appear -->
+            </section>
             <section id="letterBoxes">
                 <!-- This is where the matched letters should appear, these should match the number of letters in the selected word -->
                 <ul class="ordBox">
@@ -66,20 +70,20 @@
                     <li><input type="text" disabled value="" /></li>
                 </ul>
             </section>
-            <section class="gissa">
-                <h2>Gissade Bokstäver</h2>
-                <ul id="gissade-bokstaver"></ul>
-            </section>
+            <div class="gissa-pos">
+                <section class="gissa">
+                    <h2>Gissade Bokstäver</h2>
+                    <ul id="gissade-bokstaver"></ul>
+                </section>
+            </div>
+
             <div class="hang">
                 <img id="hangman" src="images/h0.png" alt="hangman">
             </div>
         </section>
-        <section id="message">
-            <!-- This is where messages should appear -->
-        </section>
+
     </main>
     <footer>
-        Chas Academy - Hangman
     </footer>
     <script type="text/javascript" src="js/script.js"></script>
 </body>
